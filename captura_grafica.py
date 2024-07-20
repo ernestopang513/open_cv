@@ -1,7 +1,33 @@
+from selenium import webdriver
 import cv2
 import numpy as np
 import time
-# Lee la imagen
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+
+driver = webdriver.Edge()
+
+driver.get('http://demo-store.seleniumacademy.com/')
+
+try:
+    women = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, '//nav/ol/li[contains(@class, "nav-1")]/a')))
+    
+    elements = driver.find_elements(By.XPATH, '//nav/ol/li[contains(@class, "nav-1")]/a[contains(text(), "Women")]')
+    for element in elements:
+        if "has-children" in element.get_attribute("class"):
+            driver.execute_script("arguments[0].style.border = 'thick solid blue'", element)
+
+    screenshot_path = 'captura_de_pantalla.png'
+    driver.save_screenshot(screenshot_path)
+
+    time.sleep(5)
+    print(women.text)
+finally:
+    # Cerrar el navegador
+    driver.quit()
+
 imagen = cv2.imread('captura_de_pantalla.png')
 if imagen is None:
     print("Error: No se puede abrir o leer el archivo de imagen. Verifica la ruta y el nombre del archivo.")
