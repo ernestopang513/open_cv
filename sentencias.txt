@@ -1,0 +1,26 @@
+#$x('//div[@class="menu-item"]/a[contains(text(), "Condiciones Operativas")]/text()').map(x=>x.wholeText)
+
+
+Fechas de reportes en la ruta 
+
+http://www.tcmas.mx/sistemasdegasoducto/ENC_MZT/calidaddegas
+
+$x('//div[@class="loadedContent"]/div[3]/div[2]/text()').map(x=>x.wholeText)
+
+
+-----------------------------------------------------------------------------------------------------------
+
+
+select tag
+
+$x('//body/form/select[contains(@name, "cars")]/option/text()').map(x=>x.wholeText)
+
+nombres de las opciones
+
+$x('//body/form/select[contains(@name, "cars")]')
+
+elemento web select
+
+$x('//body/form/select[contains(@name, "cars")]/option[contains(text(), "Volvo")]/text()').map(x=>x.wholeText)
+
+opcion volvo que voy a seleccionar

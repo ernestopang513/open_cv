@@ -12,17 +12,27 @@ driver = webdriver.Edge()
 driver.get('http://demo-store.seleniumacademy.com/')
 
 try:
+
+    # Ubicacion del elemento web a resaltar
     women = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, '//nav/ol/li[contains(@class, "nav-1")]/a')))
     
+
+
+
+    # Obtencion del elemento web mediante el driver
     elements = driver.find_elements(By.XPATH, '//nav/ol/li[contains(@class, "nav-1")]/a[contains(text(), "Women")]')
     for element in elements:
         if "has-children" in element.get_attribute("class"):
             driver.execute_script("arguments[0].style.border = 'thick solid blue'", element)
 
+    # Impresion de pantalla del ordenador resaltando la imagen objetivo 
+
     screenshot_path = 'captura_de_pantalla.png'
     driver.save_screenshot(screenshot_path)
 
-    time.sleep(5)
+    # time.sleep(5)
+
+
     print(women.text)
 finally:
     # Cerrar el navegador
