@@ -24,7 +24,9 @@ try:
     select.select_by_visible_text('Opel')
 
     WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, '//body/form/input[@value="Submit"]'))).click()
-
+    WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, '//body/h2[text()="Your input was received as:"]/following-sibling::*[1]')))
+    element = driver.find_element(By.XPATH, '//body/h2[text()="Your input was received as:"]/following-sibling::*[1]')
+    driver.execute_script("arguments[0].style.setProperty('border', 'thick solid black', 'important');", element)
     # Impresion de pantalla del ordenador resaltando la imagen objetivo 
     # screenshot_path = 'captura_de_pantalla.png'
     # driver.save_screenshot(screenshot_path)
