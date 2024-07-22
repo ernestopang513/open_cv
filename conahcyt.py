@@ -6,6 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
+from selenium.webdriver.common.action_chains import ActionChains
 
 
 #Este programa ya resalta el elemento web definido y ubicado por selenium mediante el xpath para despues hacer el procesamiento
@@ -14,30 +15,35 @@ from selenium.webdriver.support.select import Select
 
 driver = webdriver.Edge()
 
-driver.get('https://www.w3schools.com/tags/tryit.asp?filename=tryhtml_select')
+driver.get('https://energia.conacyt.mx/planeas/hidrocarburos/flujo-gas')
+
+driver.maximize_window()
 
 try:
     
     # Cambiar al iframe adecuado
-    driver.switch_to.frame("iframeResult")
+    # driver.switch_to.frame("iframeResult")
     # driver.switch_to.new_window('window')
     # Ubicacion del elemento web a resaltar
-    opel = WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.XPATH, '//select[contains(@name, "cars")]/option[contains(@value, "opel")]')))
-    print(opel.text)
-
-    # Obtencion del elemento web mediante el driver
-    select_element = driver.find_element(By.XPATH, '//select[contains(@name, "cars")]')
+    element = WebDriverWait(driver, 10).until(EC.presence_of_element_located(
+        (By.XPATH, '/html/body/div[2]/div[2]/div[2]/div')))
+    actions = ActionChains(driver)
+    actions.move_to_element(element).perform()
+    # # Obtencion del elemento web mediante el driver
+    # select_element = driver.find_element(By.XPATH, '//select[contains(@name, "cars")]')
     
-    select = Select(select_element)
-    select.select_by_visible_text('Opel')
+    # select = Select(select_element)
+    # select.select_by_visible_text('Opel')
 
-    WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, '//body/form/input[@value="Submit"]'))).click()
-    WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, '//body/h2[text()="Your input was received as:"]/following-sibling::*[1]')))
-    element = driver.find_element(By.XPATH, '//body/h2[text()="Your input was received as:"]/following-sibling::*[1]')
+    # WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, '//body/form/input[@value="Submit"]'))).click()
+    # WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, '//body/h2[text()="Your input was received as:"]/following-sibling::*[1]')))
+    # element = driver.find_element(By.XPATH, '//body/h2[text()="Your input was received as:"]/following-sibling::*[1]')
+    driver.execute_script("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center', inline: 'center'});", element)
     driver.execute_script("arguments[0].style.setProperty('border', 'thick solid black', 'important');", element)
+    time.sleep(10)
     
     # Impresion de pantalla del ordenador resaltando la imagen objetivo 
-    screenshot_path = 'captura_de_pantalla_select.png'
+    screenshot_path = 'conahcyt.png'
     driver.save_screenshot(screenshot_path)
     time.sleep(5)
     
@@ -50,7 +56,7 @@ finally:
     # Cerrar el navegador
     driver.quit()
 
-imagen = cv2.imread('captura_de_pantalla_select.png')
+imagen = cv2.imread('conahcyt.png')
 if imagen is None:
     print("Error: No se puede abrir o leer el archivo de imagen. Verifica la ruta y el nombre del archivo.")
 else:
