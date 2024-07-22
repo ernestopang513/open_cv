@@ -9,6 +9,8 @@ from selenium.webdriver.support.select import Select
 from selenium.webdriver.common.action_chains import ActionChains
 
 
+
+
 #Este programa ya resalta el elemento web definido y ubicado por selenium mediante el xpath para despues hacer el procesamiento
 # digital de la imagen optener la mascara de mediante la ubicacion de contornos y despues aplicar un filtro con el tamaño objetivo 
 # para finalmente recortar la imagen. 
@@ -38,14 +40,19 @@ try:
     # WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, '//body/form/input[@value="Submit"]'))).click()
     # WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, '//body/h2[text()="Your input was received as:"]/following-sibling::*[1]')))
     # element = driver.find_element(By.XPATH, '//body/h2[text()="Your input was received as:"]/following-sibling::*[1]')
-    driver.execute_script("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center', inline: 'center'});", element)
+    driver.execute_script("arguments[0].scrollIntoView({behavior: 'auto', block: 'center', inline: 'center'});", element)
+    # WebDriverWait(driver, 10).until(lambda driver: is_element_centered(driver, element))
+
     driver.execute_script("arguments[0].style.setProperty('border', 'thick solid black', 'important');", element)
-    time.sleep(10)
-    
+
+   
+    time.sleep(0.4)
+    # WebDriverWait(driver, 10).until(EC.visibility_of_element_located(
+    #     (By.XPATH, '/html/body/div[2]/div[2]/div[2]/div')))
     # Impresion de pantalla del ordenador resaltando la imagen objetivo 
     screenshot_path = 'conahcyt.png'
     driver.save_screenshot(screenshot_path)
-    time.sleep(5)
+    # time.sleep(5)
     
 
     # time.sleep(5)
@@ -112,7 +119,8 @@ else:
     # cv2.imshow('Imagen con blanco transformado a azul', imagen)
     
     # Muestra la imagen en escala de grises
-    cv2.imshow('Imagen en escala de grises', gray)
+    gray2 = cv2.resize(gray, None, fx=0.5, fy=0.5)
+    cv2.imshow('Imagen en escala de grises', gray2)
     
     # Muestra la imagen binaria
     cv2.imshow('Imagen binaria', th)
