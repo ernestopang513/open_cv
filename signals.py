@@ -1,0 +1,169 @@
+from selenium import webdriver
+import cv2
+import numpy as np
+import time
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.select import Select
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.edge.options import Options
+
+
+
+
+#Este programa ya resalta el elemento web definido y ubicado por selenium mediante el xpath para despues hacer el procesamiento
+# digital de la imagen optener la mascara de mediante la ubicacion de contornos y despues aplicar un filtro con el tamaño objetivo 
+# para finalmente recortar la imagen. 
+
+# options = Options()
+# options.add_argument('--headless')
+# options.add_argument('--disable-gpu')
+# options.add_argument('--window-size=1920,1080')
+
+# driver = webdriver.Edge(options=options)
+
+driver = webdriver.Edge()
+driver.get('http://10.55.219.212:8080/CFE/senalesEstacion')
+
+driver.maximize_window()
+
+
+try:
+    
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located(
+        (By.XPATH, '/html/body/div[1]/nav[2]/div/div[1]/ul/ul/li[1]/a'))).click()
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located(
+        (By.XPATH, '/html/body/div[1]/nav[2]/div/div[1]/ul/ul/li[2]/a'))).click()
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located(
+        (By.XPATH, '/html/body/div[1]/nav[2]/div/div[1]/ul/ul/li[2]/ul/li[1]/a'))).click()
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located(
+        (By.XPATH, '/html/body/div[1]/center/table/tbody/tr[1]/td/table/tbody/tr[2]/td/center/select/option[35]'))).click()
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located(
+        (By.XPATH, '//*[@id="boton1"]'))).click()
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located(
+        (By.XPATH, '//*[@id="1_2249_B"]'))).click()
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located(
+        (By.XPATH, '/html/body/div[1]/div[1]/div/div[4]/button'))).click()
+    time.sleep(2)
+    
+    # time.sleep(5)
+   
+    element = WebDriverWait(driver, 10).until(EC.presence_of_element_located(
+        (By.XPATH, '//div[@id = "ModalSenal"]/div[@class = "modal-content"]')))
+    element2 = WebDriverWait(driver, 10).until(EC.presence_of_element_located(
+        (By.XPATH, '//*[@id="ModalSenal"]')))
+    # element = WebDriverWait(driver, 10).until(EC.presence_of_element_located(
+    #     (By.XPATH, '/html/body/div[1]/div[1]/div')))
+    
+    # time.sleep(5)
+    # actions = ActionChains(driver)
+    # actions.move_to_element(element).perform()
+    
+    # driver.execute_script("arguments[0].scrollIntoView({behavior: 'auto', block: 'center', inline: 'center'});", element)
+    # # WebDriverWait(driver, 10).until(lambda driver: is_element_centered(driver, element))
+
+    driver.execute_script("arguments[0].style.setProperty('border', '10px solid black', 'important');", element)
+    driver.execute_script("arguments[0].style.setProperty('background-color', 'white', 'important');", element2)
+
+   
+    # time.sleep(0.4)
+    # # WebDriverWait(driver, 10).until(EC.visibility_of_element_located(
+    # #     (By.XPATH, '/html/body/div[2]/div[2]/div[2]/div')))
+    # # Impresion de pantalla del ordenador resaltando la imagen objetivo 
+    time.sleep(5)
+
+    screenshot_path = 'G-GAP-08FQYE01.png'
+    driver.save_screenshot(screenshot_path)
+    
+
+    # # time.sleep(5)
+
+
+    
+finally:
+    # Cerrar el navegador
+    driver.quit()
+
+imagen = cv2.imread('G-GAP-08FQYE01.png')
+if imagen is None:
+    print("Error: No se puede abrir o leer el archivo de imagen. Verifica la ruta y el nombre del archivo.")
+else:
+    # Crear una copia de la imagen original para no modificar la original
+    imagen_original = imagen.copy()
+        
+    # Convierte la imagen a escala de grises
+    gray = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
+    
+    # Aplica un umbral para convertir la imagen a binaria
+    _, th = cv2.threshold(gray, 100, 255, cv2.THRESH_BINARY_INV)
+    
+    # Encuentra contornos en la imagen binaria
+    contornos, hierarchy = cv2.findContours(th, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
+    
+    # print('hierarchy=', hierarchy)
+    
+    # print(len(contornos))
+    # Crear una máscara en blanco para rellenar los contornos hijos
+    mascara_hijos = np.zeros_like(gray)
+
+    # cv2.imshow('gray',gray)
+    # cv2.imshow('mascara hijos', mascara_hijos)
+    
+    # Dibuja todos los contornos en la imagen original
+    for i in range(len(contornos)):
+        area = cv2.contourArea(contornos[i])
+        if area > 3000:
+            cv2.drawContours(imagen, contornos, i, (0, 255, 0), 1)
+           
+            # Rellena los contornos hijos de blanco
+            if hierarchy[0][i][3] != -1:  # Verifica si el contorno tiene un padre
+                cv2.drawContours(mascara_hijos, contornos, i, 255, -1)  # Rellena el contorno hijo de blanco
+    
+    # cv2.imshow('mascara hijos', mascara_hijos)
+    # Usar la máscara para extraer la parte del contorno hijo de la imagen original
+    resultado = cv2.bitwise_and(imagen_original, imagen_original, mask = mascara_hijos)
+    
+    # Convertir a escala de grises y encontrar todos los píxeles no negros
+    gray_resultado = cv2.cvtColor(resultado, cv2.COLOR_BGR2GRAY)
+    non_zero_pixels = cv2.findNonZero(gray_resultado)
+    
+    # Calcular el rectángulo delimitador de la región no negra
+    x, y, w, h = cv2.boundingRect(non_zero_pixels)
+    
+    # Recortar la imagen utilizando el rectángulo delimitador
+    resultado_recortado = resultado[y:y+h, x:x+w]
+    
+    # Guarda el resultado recortado en un archivo .png
+    cv2.imwrite('resultado_recortado.png', resultado_recortado)
+    
+    # # Muestra la imagen con el blanco transformado a azul
+    # cv2.imshow('Imagen con blanco transformado a azul', imagen)
+    
+    # Muestra la imagen en escala de grises
+    # gray2 = cv2.resize(gray, None, fx=0.5, fy=0.5)
+    cv2.imshow('Imagen en escala de grises', gray)
+    
+    # Muestra la imagen binaria
+    # th2 = cv2.resize(th, None, fx=0.5, fy=0.5)
+    cv2.imshow('Imagen binaria', th)
+    
+    # Muestra la imagen con contornos
+    # imagen2 = cv2.resize(imagen, None, fx=0.5, fy=0.5)
+    cv2.imshow('Imagen con contornos', imagen)
+    
+    # Muestra la máscara de contornos hijos
+    # mascara_hijos2 = cv2.resize(mascara_hijos, None, fx=0.5, fy=0.5)
+    cv2.imshow('Máscara de contornos hijos', mascara_hijos)
+    
+    # Muestra el resultado final con los colores originales del contorno hijo
+    # resultado2 = cv2.resize(resultado, None, fx=0.5, fy=0.5)
+    cv2.imshow('Resultado', resultado)
+    
+    # Muestra el resultado recortado
+    # resultado_recortado2 = cv2.resize(resultado_recortado, None, fx=0.5, fy=0.5)
+    cv2.imshow('Resultado recortado', resultado_recortado)
+    
+    # Espera hasta que se presione una tecla
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
