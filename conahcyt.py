@@ -7,6 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.edge.options import Options
 
 
 
@@ -15,11 +16,18 @@ from selenium.webdriver.common.action_chains import ActionChains
 # digital de la imagen optener la mascara de mediante la ubicacion de contornos y despues aplicar un filtro con el tamaño objetivo 
 # para finalmente recortar la imagen. 
 
-driver = webdriver.Edge()
+# options = Options()
+# options.add_argument('--headless')
+# options.add_argument('--disable-gpu')
+# options.add_argument('--window-size=1920,1080')
 
+# driver = webdriver.Edge(options=options)
+
+driver = webdriver.Edge()
 driver.get('https://energia.conacyt.mx/planeas/hidrocarburos/flujo-gas')
 
 driver.maximize_window()
+
 
 try:
     
@@ -123,19 +131,24 @@ else:
     cv2.imshow('Imagen en escala de grises', gray2)
     
     # Muestra la imagen binaria
-    cv2.imshow('Imagen binaria', th)
+    th2 = cv2.resize(th, None, fx=0.5, fy=0.5)
+    cv2.imshow('Imagen binaria', th2)
     
     # Muestra la imagen con contornos
-    cv2.imshow('Imagen con contornos', imagen)
+    imagen2 = cv2.resize(imagen, None, fx=0.5, fy=0.5)
+    cv2.imshow('Imagen con contornos', imagen2)
     
     # Muestra la máscara de contornos hijos
-    cv2.imshow('Máscara de contornos hijos', mascara_hijos)
+    mascara_hijos2 = cv2.resize(mascara_hijos, None, fx=0.5, fy=0.5)
+    cv2.imshow('Máscara de contornos hijos', mascara_hijos2)
     
     # Muestra el resultado final con los colores originales del contorno hijo
-    cv2.imshow('Resultado', resultado)
+    resultado2 = cv2.resize(resultado, None, fx=0.5, fy=0.5)
+    cv2.imshow('Resultado', resultado2)
     
     # Muestra el resultado recortado
-    cv2.imshow('Resultado recortado', resultado_recortado)
+    resultado_recortado2 = cv2.resize(resultado_recortado, None, fx=0.5, fy=0.5)
+    cv2.imshow('Resultado recortado', resultado_recortado2)
     
     # Espera hasta que se presione una tecla
     cv2.waitKey(0)
