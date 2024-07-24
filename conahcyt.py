@@ -99,7 +99,7 @@ else:
     # Dibuja todos los contornos en la imagen original
     for i in range(len(contornos)):
         area = cv2.contourArea(contornos[i])
-        if area > 3000:
+        if area > 30000:
             cv2.drawContours(imagen, contornos, i, (0, 255, 0), 1)
            
             # Rellena los contornos hijos de blanco

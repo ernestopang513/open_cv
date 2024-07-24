@@ -24,15 +24,15 @@ from selenium.webdriver.edge.options import Options
 # driver = webdriver.Edge(options=options)
 
 driver = webdriver.Edge()
-driver.get('http://10.55.219.212:8080/CFE/senalesEstacion')
+driver.get('http://10.55.219.212:8080/CFE/index')
 
 driver.maximize_window()
 
 
 try:
     
-    WebDriverWait(driver, 10).until(EC.presence_of_element_located(
-        (By.XPATH, '/html/body/div[1]/nav[2]/div/div[1]/ul/ul/li[1]/a'))).click()
+    # WebDriverWait(driver, 10).until(EC.presence_of_element_located(
+    #     (By.XPATH, '/html/body/div[1]/nav[2]/div/div[1]/ul/ul/li[1]/a'))).click()
     WebDriverWait(driver, 10).until(EC.presence_of_element_located(
         (By.XPATH, '/html/body/div[1]/nav[2]/div/div[1]/ul/ul/li[2]/a'))).click()
     WebDriverWait(driver, 10).until(EC.presence_of_element_located(
@@ -46,6 +46,8 @@ try:
     WebDriverWait(driver, 10).until(EC.presence_of_element_located(
         (By.XPATH, '/html/body/div[1]/div[1]/div/div[4]/button'))).click()
     time.sleep(2)
+
+    # valor1 =  
     
     # time.sleep(5)
    
@@ -71,7 +73,7 @@ try:
     # # WebDriverWait(driver, 10).until(EC.visibility_of_element_located(
     # #     (By.XPATH, '/html/body/div[2]/div[2]/div[2]/div')))
     # # Impresion de pantalla del ordenador resaltando la imagen objetivo 
-    time.sleep(5)
+    # time.sleep(5)
 
     screenshot_path = 'G-GAP-08FQYE01.png'
     driver.save_screenshot(screenshot_path)
