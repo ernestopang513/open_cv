@@ -12,66 +12,67 @@ from selenium.webdriver.edge.options import Options
 
 
 
-#Este programa ya resalta el elemento web definido y ubicado por selenium mediante el xpath para despues hacer el procesamiento
-# digital de la imagen optener la mascara de mediante la ubicacion de contornos y despues aplicar un filtro con el tamaño objetivo 
-# para finalmente recortar la imagen. 
+# #Este programa ya resalta el elemento web definido y ubicado por selenium mediante el xpath para despues hacer el procesamiento
+# # digital de la imagen optener la mascara de mediante la ubicacion de contornos y despues aplicar un filtro con el tamaño objetivo 
+# # para finalmente recortar la imagen. 
 
-# options = Options()
-# options.add_argument('--headless')
-# options.add_argument('--disable-gpu')
-# options.add_argument('--window-size=1920,1080')
+# # options = Options()
+# # options.add_argument('--headless')
+# # options.add_argument('--disable-gpu')
+# # options.add_argument('--window-size=1920,1080')
 
-# driver = webdriver.Edge(options=options)
+# # driver = webdriver.Edge(options=options)
 
-driver = webdriver.Edge()
-driver.get('https://energia.conacyt.mx/planeas/hidrocarburos/flujo-gas')
+# driver = webdriver.Edge()
+# driver.get('https://energia.conacyt.mx/planeas/hidrocarburos/flujo-gas')
 
-driver.maximize_window()
+# driver.maximize_window()
 
 
-try:
+# try:
     
-    # Cambiar al iframe adecuado
-    # driver.switch_to.frame("iframeResult")
-    # driver.switch_to.new_window('window')
-    # Ubicacion del elemento web a resaltar
-    element = WebDriverWait(driver, 10).until(EC.presence_of_element_located(
-        (By.XPATH, '/html/body/div[2]/div[2]/div[2]/div')))
-    actions = ActionChains(driver)
-    actions.move_to_element(element).perform()
-    # # Obtencion del elemento web mediante el driver
-    # select_element = driver.find_element(By.XPATH, '//select[contains(@name, "cars")]')
+#     # Cambiar al iframe adecuado
+#     # driver.switch_to.frame("iframeResult")
+#     # driver.switch_to.new_window('window')
+#     # Ubicacion del elemento web a resaltar
+#     element = WebDriverWait(driver, 10).until(EC.presence_of_element_located(
+#         (By.XPATH, '/html/body/div[2]/div[2]/div[2]/div')))
+#     actions = ActionChains(driver)
+#     actions.move_to_element(element).perform()
+#     # # Obtencion del elemento web mediante el driver
+#     # select_element = driver.find_element(By.XPATH, '//select[contains(@name, "cars")]')
     
-    # select = Select(select_element)
-    # select.select_by_visible_text('Opel')
+#     # select = Select(select_element)
+#     # select.select_by_visible_text('Opel')
 
-    # WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, '//body/form/input[@value="Submit"]'))).click()
-    # WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, '//body/h2[text()="Your input was received as:"]/following-sibling::*[1]')))
-    # element = driver.find_element(By.XPATH, '//body/h2[text()="Your input was received as:"]/following-sibling::*[1]')
-    driver.execute_script("arguments[0].scrollIntoView({behavior: 'auto', block: 'center', inline: 'center'});", element)
-    # WebDriverWait(driver, 10).until(lambda driver: is_element_centered(driver, element))
+#     # WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, '//body/form/input[@value="Submit"]'))).click()
+#     # WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, '//body/h2[text()="Your input was received as:"]/following-sibling::*[1]')))
+#     # element = driver.find_element(By.XPATH, '//body/h2[text()="Your input was received as:"]/following-sibling::*[1]')
+#     driver.execute_script("arguments[0].scrollIntoView({behavior: 'auto', block: 'center', inline: 'center'});", element)
+#     # WebDriverWait(driver, 10).until(lambda driver: is_element_centered(driver, element))
 
-    driver.execute_script("arguments[0].style.setProperty('border', 'thick solid black', 'important');", element)
+#     driver.execute_script("arguments[0].style.setProperty('border', 'thick solid black', 'important');", element)
 
    
-    time.sleep(0.4)
-    # WebDriverWait(driver, 10).until(EC.visibility_of_element_located(
-    #     (By.XPATH, '/html/body/div[2]/div[2]/div[2]/div')))
-    # Impresion de pantalla del ordenador resaltando la imagen objetivo 
-    screenshot_path = 'conahcyt.png'
-    driver.save_screenshot(screenshot_path)
-    # time.sleep(5)
+#     time.sleep(0.4)
+#     # WebDriverWait(driver, 10).until(EC.visibility_of_element_located(
+#     #     (By.XPATH, '/html/body/div[2]/div[2]/div[2]/div')))
+#     # Impresion de pantalla del ordenador resaltando la imagen objetivo 
+#     screenshot_path = 'conahcyt.png'
+#     driver.save_screenshot(screenshot_path)
+#     # time.sleep(5)
     
 
-    # time.sleep(5)
+#     # time.sleep(5)
 
 
     
-finally:
-    # Cerrar el navegador
-    driver.quit()
+# finally:
+#     # Cerrar el navegador
+#     driver.quit()
 
-imagen = cv2.imread('conahcyt.png')
+# imagen = cv2.imread('mayacan_nitrogeno.png')
+imagen = cv2.imread('mayacan_tratado.png')
 if imagen is None:
     print("Error: No se puede abrir o leer el archivo de imagen. Verifica la ruta y el nombre del archivo.")
 else:
@@ -121,7 +122,7 @@ else:
     resultado_recortado = resultado[y:y+h, x:x+w]
     
     # Guarda el resultado recortado en un archivo .png
-    cv2.imwrite('resultado_recortado.png', resultado_recortado)
+    cv2.imwrite('resultado_recortado2.png', resultado_recortado)
     
     # # Muestra la imagen con el blanco transformado a azul
     # cv2.imshow('Imagen con blanco transformado a azul', imagen)
